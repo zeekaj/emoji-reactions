@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>Shared Emoji Reactions</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
     body {
       font-family: sans-serif;
       margin: 0;
@@ -50,29 +51,29 @@
       }
     }
 
-    /* Media queries for mobile responsiveness */
+    /* Media queries for mobile responsiveness - Larger Buttons */
     @media (max-width: 768px) { /* Adjust breakpoint as needed */
       .buttons {
-        gap: 10px; /* Smaller gap for mobile */
-        padding: 0 10px; /* Add some padding to the sides */
-        width: calc(100% - 20px); /* Take up most of the width */
-        justify-content: center; /* Center buttons */
-        flex-wrap: wrap; /* Allow buttons to wrap to the next line */
+        gap: 15px; /* Slightly larger gap for mobile buttons */
+        padding: 0 15px;
+        width: calc(100% - 30px);
+        justify-content: center;
+        flex-wrap: wrap;
       }
 
       button {
-        flex: 1 1 auto; /* Allow buttons to grow and shrink, occupying available space */
-        min-width: 100px; /* Ensure a minimum width for buttons */
-        font-size: 16px; /* Slightly smaller font size for mobile */
-        padding: 8px 15px; /* Adjust padding for mobile buttons */
+        flex: 1 1 auto;
+        min-width: 120px; /* Increased minimum width for larger buttons */
+        font-size: 20px; /* Larger font size for better touch experience */
+        padding: 12px 25px; /* Increased padding for larger buttons */
       }
     }
 
-    @media (max-width: 480px) { /* Even smaller screens */
+    @media (max-width: 480px) { /* Even smaller screens - Adjust further if needed */
       button {
-        font-size: 14px;
-        padding: 6px 12px;
-        min-width: 80px;
+        font-size: 18px;
+        padding: 10px 20px;
+        min-width: 100px;
       }
     }
   </style>
