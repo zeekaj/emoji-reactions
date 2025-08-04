@@ -59,12 +59,11 @@
     <button onclick="sendEmoji('🎈', 4)">Balloons</button>
   </div>
 
-  <!-- Firebase SDKs -->
-  https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
+  </tic.com/firebasejs/9.23.0/firebase-database-compact.js>
   https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js
 
   <script>
-    // Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyDiSzHcEBcTyPumF2uyrXS6kjKonhLZpc4",
       authDomain: "emoji-tracker-ebcaf.firebaseapp.com",
@@ -76,14 +75,12 @@
       measurementId: "G-K7ZDTW3MDN"
     };
 
-    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
     const buttonContainer = document.getElementById('buttonContainer');
     const buttons = buttonContainer.getElementsByTagName('button');
 
-    // Send emoji to Firebase
     function sendEmoji(symbol, index) {
       db.ref('emojis').push({
         symbol: symbol,
@@ -92,7 +89,6 @@
       });
     }
 
-    // Show emoji animation
     function showEmoji(symbol, index) {
       const button = buttons[index];
       const rect = button.getBoundingClientRect();
