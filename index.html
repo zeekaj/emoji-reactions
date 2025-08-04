@@ -59,11 +59,11 @@
     <button onclick="sendEmoji('🎈', 4)">Balloons</button>
   </div>
 
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
-  </tic.com/firebasejs/9.23.0/firebase-database-compact.js>
-  https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
   <script>
+    // Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyDiSzHcEBcTyPumF2uyrXS6kjKonhLZpc4",
       authDomain: "emoji-tracker-ebcaf.firebaseapp.com",
@@ -75,12 +75,14 @@
       measurementId: "G-K7ZDTW3MDN"
     };
 
+    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
     const buttonContainer = document.getElementById('buttonContainer');
     const buttons = buttonContainer.getElementsByTagName('button');
 
+    // Send emoji to Firebase
     function sendEmoji(symbol, index) {
       db.ref('emojis').push({
         symbol: symbol,
@@ -89,6 +91,7 @@
       });
     }
 
+    // Show emoji animation
     function showEmoji(symbol, index) {
       const button = buttons[index];
       const rect = button.getBoundingClientRect();
@@ -96,7 +99,9 @@
       const emoji = document.createElement('div');
       emoji.className = 'emoji';
       emoji.textContent = symbol;
+      // Adjust left and top to make it start near the button
       emoji.style.left = rect.left + rect.width / 2 + 'px';
+      emoji.style.top = rect.top + 'px'; // Start from the button's top edge
 
       document.body.appendChild(emoji);
 
