@@ -51,70 +51,71 @@
 </head>
 <body>
 
-  <div class="buttons" id="buttonContainer">
-    <button onclick="sendEmoji('�', 0)">Clap</button>
-    <button onclick="sendEmoji('👍', 1)">Thumbs Up</button>
-    <button onclick="sendEmoji('❤️', 2)">Love</button>
-    <button onclick="sendEmoji('😊', 3)">Happy</button>
-    <button onclick="sendEmoji('🎈', 4)">Balloons</button>
-  </div>
+  <div class="buttons" id="buttonContainer">
+    <button onclick="sendEmoji('👏', 0)">Clap</button>
+    <button onclick="sendEmoji('👍', 1)">Thumbs Up</button>
+    <button onclick="sendEmoji('❤️', 2)">Love</button>
+    <button onclick="sendEmoji('😊', 3)">Happy</button>
+    <button onclick="sendEmoji('🎈', 4)">Balloons</button>
+  </div>
 
-    https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js
-  https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-  <script>
-    // Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyDiSzHcEBcTyPumF2uyrXS6kjKonhLZpc4",
-      authDomain: "emoji-tracker-ebcaf.firebaseapp.com",
-      databaseURL: "https://emoji-tracker-ebcaf-default-rtdb.firebaseio.com",
-      projectId: "emoji-tracker-ebcaf",
-      storageBucket: "emoji-tracker-ebcaf.firebasestorage.app",
-      messagingSenderId: "145980569135",
-      appId: "1:145980569135:web:0e8b621bb668767f9d38da",
-      measurementId: "G-K7ZDTW3MDN"
-    };
+  <script>
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDiSzHcEBcTyPumF2uyrXS6kjKonhLZpc4",
+      authDomain: "emoji-tracker-ebcaf.firebaseapp.com",
+      databaseURL: "https://emoji-tracker-ebcaf-default-rtdb.firebaseio.com",
+      projectId: "emoji-tracker-ebcaf",
+      storageBucket: "emoji-tracker-ebcaf.firebasestorage.app",
+      messagingSenderId: "145980569135",
+      appId: "1:145980569135:web:0e8b621bb668767f9d38da",
+      measurementId: "G-K7ZDTW3MDN"
+    };
 
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
-    const buttonContainer = document.getElementById('buttonContainer');
-    const buttons = buttonContainer.getElementsByTagName('button');
+    const buttonContainer = document.getElementById('buttonContainer');
+    const buttons = buttonContainer.getElementsByTagName('button');
 
-    // Send emoji to Firebase
-    function sendEmoji(symbol, index) {
-      db.ref('emojis').push({
-        symbol: symbol,
-        index: index,
-        timestamp: Date.now()
-      });
-    }
+    // Send emoji to Firebase
+    function sendEmoji(symbol, index) {
+      db.ref('emojis').push({
+        symbol: symbol,
+        index: index,
+        timestamp: Date.now()
+      });
+    }
 
-    // Show emoji animation
-    function showEmoji(symbol, index) {
-      const button = buttons[index];
-      const rect = button.getBoundingClientRect();
+    // Show emoji animation
+    function showEmoji(symbol, index) {
+      const button = buttons[index];
+      const rect = button.getBoundingClientRect();
 
-      const emoji = document.createElement('div');
-      emoji.className = 'emoji';
-      emoji.textContent = symbol;
-      emoji.style.left = rect.left + rect.width / 2 + 'px';
+      const emoji = document.createElement('div');
+      emoji.className = 'emoji';
+      emoji.textContent = symbol;
+      // Adjust left and top to make it start near the button
+      emoji.style.left = rect.left + rect.width / 2 + 'px';
+      emoji.style.top = rect.top + 'px'; // Start from the button's top edge
 
-      document.body.appendChild(emoji);
+      document.body.appendChild(emoji);
 
-      setTimeout(() => {
-        emoji.remove();
-      }, 2000);
-    }
+      setTimeout(() => {
+        emoji.remove();
+      }, 2000);
+    }
 
-    // Listen for new emoji events
-    db.ref('emojis').on('child_added', snapshot => {
-      const data = snapshot.val();
-      showEmoji(data.symbol, data.index);
-    });
-  </script>
+    // Listen for new emoji events
+    db.ref('emojis').on('child_added', snapshot => {
+      const data = snapshot.val();
+      showEmoji(data.symbol, data.index);
+    });
+  </script>
 
 </body>
 </html>
-�
