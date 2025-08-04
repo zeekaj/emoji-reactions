@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Shared Emoji Reactions</title>
   <style>
     body {
@@ -10,7 +11,7 @@
       padding: 0;
       height: 100vh;
       overflow: hidden;
-      background: transparent; /* transparent background */
+      background: transparent;
       position: relative;
     }
 
@@ -20,13 +21,26 @@
       left: 50%;
       transform: translateX(-50%);
       display: flex;
-      gap: 40px;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      padding: 10px;
+      max-width: 100%;
     }
 
     button {
-      padding: 10px 20px;
-      font-size: 18px;
+      padding: 12px 16px;
+      font-size: 16px;
       cursor: pointer;
+      border: none;
+      border-radius: 8px;
+      background-color: #f0f0f0;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #e0;
     }
 
     .emoji {
@@ -60,30 +74,24 @@
   </div>
 
   <!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-
-  <script>
-    // Firebase configuration
-    const firebaseConfig = {
+  <script src="https://www.gstatic.com/firebasejs/9.23pp-compat.js
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js    const firebaseConfig = {
       apiKey: "AIzaSyDiSzHcEBcTyPumF2uyrXS6kjKonhLZpc4",
       authDomain: "emoji-tracker-ebcaf.firebaseapp.com",
       databaseURL: "https://emoji-tracker-ebcaf-default-rtdb.firebaseio.com",
       projectId: "emoji-tracker-ebcaf",
-      storageBucket: "emoji-tracker-ebcaf.firebasestorage.app",
+      storageBucket: "emoji-tracker-ebcaf.appspot.com",
       messagingSenderId: "145980569135",
       appId: "1:145980569135:web:0e8b621bb668767f9d38da",
       measurementId: "G-K7ZDTW3MDN"
     };
 
-    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
     const buttonContainer = document.getElementById('buttonContainer');
     const buttons = buttonContainer.getElementsByTagName('button');
 
-    // Send emoji to Firebase
     function sendEmoji(symbol, index) {
       db.ref('emojis').push({
         symbol: symbol,
@@ -92,7 +100,6 @@
       });
     }
 
-    // Show emoji animation
     function showEmoji(symbol, index) {
       const button = buttons[index];
       const rect = button.getBoundingClientRect();
@@ -109,7 +116,6 @@
       }, 2000);
     }
 
-    // Listen for new emoji events
     db.ref('emojis').on('child_added', snapshot => {
       const data = snapshot.val();
       showEmoji(data.symbol, data.index);
