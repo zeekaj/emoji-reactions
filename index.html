@@ -77,6 +77,9 @@
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
+    
+// Test write to Firebase
+db.ref('test').set({ message: "Hello from GitHub Pages!" });
 
     const buttonContainer = document.getElementById('buttonContainer');
     const buttons = buttonContainer.getElementsByTagName('button');
