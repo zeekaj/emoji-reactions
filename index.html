@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Shared Emoji Reactions</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      overflow: hidden;
+      background: #00FF00; /* Greenscreen background */
+      position: relative;
+    }
+
+    .buttons {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 40px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .emoji {
+      position: absolute;
+      font-size: 40px;
+      animation: floatUp 2s ease-out forwards;
+      pointer-events: none;
+      top: 50%;
+    }
+
+    @keyframes floatUp {
+      0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-200px) scale(1.5);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="buttons" id="buttonContainer">
+    <button onclick="sendEmoji('👏', 0)">Clap</button>
+    <button onclick="sendEmoji('👍', 1)">Thumbs Up</button>
+    <button onclick="sendEmoji('❤️', 2)">Love</button>
+    <button onclick="sendEmoji('😊', 3)">Happy</button>
+    <button onclick="sendEmoji('🎈', 4)">Balloons</button>
+  </div>
+
+  <!-- Firebase SDKs -->
+  https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js
+  <script src="https://www.gstatic.com/firebasejs/9.23atabase-compat.js
+
+  <script>
+    // Your Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyDiSzHcEBcTyPumF2uyrXS6kjKonhLZpc4",
+      authDomain: "emoji-tracker-ebcaf.firebaseapp.com",
+      databaseURL: "https://emoji-tracker-ebcaf-default-rtdb.firebaseio.com",
+      projectId: "emoji-tracker-ebcaf",
+      storageBucket: "emoji-tracker-ebcaf.firebasestorage.app",
+      messagingSenderId: "145980569135",
+      appId: "1:145980569135:web:0e8b621bb668767f9d38da",
+      measurementId: "G-K7ZDTW3MDN"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    const buttonContainer = document.getElementById('buttonContainer');
+    const buttons = buttonContainer.getElementsByTagName('button');
+
+    function sendEmoji(symbol, index) {
+      db.ref('emojis').push({
+        symbol: symbol,
+        index: index,
+        timestamp: Date.now()
+      });
+    }
+
+    function showEmoji(symbol, index) {
+      const button = buttons[index];
+      const rect = button.getBoundingClientRect();
+
+      const emoji = document.createElement('div');
+      emoji.className = 'emoji';
+      emoji.textContent = symbol;
+      emoji.style.left = rect.left + rect.width / 2 + 'px';
+
+      document.body.appendChild(emoji);
+
+      setTimeout(() => {
+        emoji.remove();
+      }, 2000);
+    }
+
+    // Listen for new emoji events
+    db.ref('emojis').on('child_added', snapshot => {
+      const data = snapshot.val();
+      showEmoji(data.symbol, data.index);
+    });
+  </script>
+
+</body>
+</html>
