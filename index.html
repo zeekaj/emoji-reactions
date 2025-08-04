@@ -1,151 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shared Emoji Reactions</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* Custom styles for the emoji animation */
-        @keyframes floatUp {
-            0% {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-            100% {
-                opacity: 0;
-                transform: translateY(-200px) scale(1.5);
-            }
-        }
-        .emoji-animation {
-            animation: floatUp 2s ease-out forwards;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shared Emoji Reactions</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      overflow: hidden;
+      background: #00FF00; /* Greenscreen background */
+      position: relative;
+    }
+
+    .buttons {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 40px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .emoji {
+      position: absolute;
+      font-size: 40px;
+      animation: floatUp 2s ease-out forwards;
+      pointer-events: none;
+      top: 50%; /* New: Set top position to the vertical center */
+    }
+
+    @keyframes floatUp {
+      0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-200px) scale(1.5);
+      }
+    }
+  </style>
 </head>
-<body class="bg-green-500 font-sans h-screen overflow-hidden relative">
+<body>
 
-    <!-- Button Container -->
-    <div id="buttonContainer" class="fixed bottom-10 left-1/2 -translate-x-1/2 flex space-x-10">
-        <button onclick="sendEmoji('👏')" class="bg-white hover:bg-gray-100 text-gray-800 font-bold py-2 px-4 rounded-full shadow-lg transition-transform hover:scale-105">👏 Clap</button>
-        <button onclick="sendEmoji('👍')" class="bg-white hover:bg-gray-100 text-gray-800 font-bold py-2 px-4 rounded-full shadow-lg transition-transform hover:scale-105">👍 Thumbs Up</button>
-        <button onclick="sendEmoji('❤️')" class="bg-white hover:bg-gray-100 text-gray-800 font-bold py-2 px-4 rounded-full shadow-lg transition-transform hover:scale-105">❤️ Love</button>
-        <button onclick="sendEmoji('😊')" class="bg-white hover:bg-gray-100 text-gray-800 font-bold py-2 px-4 rounded-full shadow-lg transition-transform hover:scale-105">😊 Happy</button>
-        <button onclick="sendEmoji('🎈')" class="bg-white hover:bg-gray-100 text-gray-800 font-bold py-2 px-4 rounded-full shadow-lg transition-transform hover:scale-105">🎈 Balloons</button>
-    </div>
+  <div class="buttons" id="buttonContainer">
+    <button onclick="sendEmoji('�', 0)">Clap</button>
+    <button onclick="sendEmoji('👍', 1)">Thumbs Up</button>
+    <button onclick="sendEmoji('❤️', 2)">Love</button>
+    <button onclick="sendEmoji('😊', 3)">Happy</button>
+    <button onclick="sendEmoji('🎈', 4)">Balloons</button>
+  </div>
 
-    <!-- Firebase SDKs -->
-    <script type="module">
-        // Import Firebase services
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        import { getAuth, signInWithCustomToken, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+  <!-- Firebase SDKs - Corrected placement and usage -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-        // Global variables provided by the Canvas environment
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+  <script>
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDiSzHcEBcTyPumF2uyrXS6kjKonhLZpc4",
+      authDomain: "emoji-tracker-ebcaf.firebaseapp.com",
+      databaseURL: "https://emoji-tracker-ebcaf-default-rtdb.firebaseio.com",
+      projectId: "emoji-tracker-ebcaf",
+      storageBucket: "emoji-tracker-ebcaf.firebasestorage.app",
+      messagingSenderId: "145980569135",
+      appId: "1:145980569135:web:0e8b621bb668767f9d38da",
+      measurementId: "G-K7ZDTW3MDN"
+    };
 
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const auth = getAuth(app);
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
-        // --- AUTHENTICATION ---
-        // Use the provided auth token if available, otherwise sign in anonymously
-        async function signIn() {
-            try {
-                if (initialAuthToken) {
-                    await signInWithCustomToken(auth, initialAuthToken);
-                } else {
-                    await signInAnonymously(auth);
-                }
-                console.log("Firebase authentication successful.");
-                setupListeners();
-            } catch (error) {
-                console.error("Firebase authentication failed:", error);
-            }
-        }
-        signIn();
+    const buttonContainer = document.getElementById('buttonContainer');
+    const buttons = buttonContainer.getElementsByTagName('button');
 
-        // Get the buttons and container
-        const buttonContainer = document.getElementById('buttonContainer');
-        const buttons = Array.from(buttonContainer.querySelectorAll('button'));
+    // Send emoji to Firebase
+    function sendEmoji(symbol, index) {
+      db.ref('emojis').push({
+        symbol: symbol,
+        index: index,
+        timestamp: Date.now()
+      });
+    }
 
-        /**
-         * Sends an emoji reaction to Firestore.
-         * @param {string} symbol The emoji character.
-         */
-        async function sendEmoji(symbol) {
-            try {
-                const buttonIndex = buttons.findIndex(btn => btn.textContent.includes(symbol));
-                if (buttonIndex === -1) {
-                    console.error("Button not found for symbol:", symbol);
-                    return;
-                }
-                await addDoc(collection(db, `artifacts/${appId}/public/data/emojis`), {
-                    symbol: symbol,
-                    buttonIndex: buttonIndex,
-                    timestamp: serverTimestamp()
-                });
-                console.log("Emoji sent to Firestore.");
-            } catch (error) {
-                console.error("Error sending emoji:", error);
-            }
-        }
-        
-        // Expose function to the global scope for onclick attributes
-        window.sendEmoji = sendEmoji;
+    // Show emoji animation
+    function showEmoji(symbol, index) {
+      const button = buttons[index];
+      const rect = button.getBoundingClientRect();
 
-        /**
-         * Shows an emoji animation on the screen.
-         * @param {string} symbol The emoji character to display.
-         * @param {number} buttonIndex The index of the button to align with.
-         */
-        function showEmoji(symbol, buttonIndex) {
-            const button = buttons[buttonIndex];
-            if (!button) return;
-            const rect = button.getBoundingClientRect();
+      const emoji = document.createElement('div');
+      emoji.className = 'emoji';
+      emoji.textContent = symbol;
+      emoji.style.left = rect.left + rect.width / 2 + 'px';
+      // Added a transform to precisely center the element itself
+      emoji.style.transform = 'translate(-50%, -50%)';
 
-            // Create the emoji element
-            const emoji = document.createElement('div');
-            emoji.textContent = symbol;
-            
-            // Add Tailwind classes for styling and positioning
-            emoji.className = `absolute text-5xl pointer-events-none emoji-animation`;
+      document.body.appendChild(emoji);
 
-            // Calculate horizontal position to align with the button center
-            emoji.style.left = `${rect.left + rect.width / 2}px`;
-            
-            // Set vertical position to the center of the page
-            emoji.style.top = `50%`;
-            
-            // Use transform to precisely center the element itself
-            emoji.style.transform = 'translate(-50%, -50%)';
+      setTimeout(() => {
+        emoji.remove();
+      }, 2000);
+    }
 
-            document.body.appendChild(emoji);
+    // Listen for new emoji events
+    db.ref('emojis').on('child_added', snapshot => {
+      const data = snapshot.val();
+      showEmoji(data.symbol, data.index);
+    });
+  </script>
 
-            // Remove the emoji after the animation completes
-            setTimeout(() => {
-                emoji.remove();
-            }, 2000);
-        }
-
-        // --- FIRESTORE LISTENER ---
-        function setupListeners() {
-            const emojisQuery = query(collection(db, `artifacts/${appId}/public/data/emojis`));
-            
-            // Listen for new emoji documents
-            onSnapshot(emojisQuery, (snapshot) => {
-                snapshot.docChanges().forEach((change) => {
-                    if (change.type === "added") {
-                        const data = change.doc.data();
-                        // This logic is for new emojis only
-                        showEmoji(data.symbol, data.buttonIndex);
-                    }
-                });
-            });
-        }
-    </script>
 </body>
 </html>
+�
